@@ -25,7 +25,8 @@
     "autoload": {
         "psr-0": {
             "Phinx": "src/"
-        }
+        },
+        "classmap" : ["migrations/"]
     },
     "bin": ["bin/phinx"]
 }

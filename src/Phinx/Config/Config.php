@@ -236,7 +236,7 @@ class Config implements ConfigInterface
         return $path;
     }
 
-    public function getMigrationNamespace()
+    public function getMigrationNamespaceName()
     {
         if (!isset($this->values['environments']['default_namespace'])) {
             return 'Phinx\Migration\Files';

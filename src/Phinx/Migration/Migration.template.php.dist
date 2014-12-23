@@ -1,5 +1,5 @@
 <?php
-namespace $namepaceName;
+namespace $namespaceName;
 
 use Phinx\Migration\AbstractMigration;
 

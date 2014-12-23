@@ -77,6 +77,36 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         putenv('PHINX_ENVIRONMENT=');
     }
 
+    public function testNoDefaultNamepaceKey()
+    {
+        $path = __DIR__ . '/_files';
+
+        // test with the config array
+        $configArray = $this->getConfigArray();
+        $config = new \Phinx\Config\Config($configArray);
+        $this->assertEquals('testing', $config->getDefaultEnvironment());
+
+        // test using a Yaml file without the 'default_database' key.
+        // (it should default to the first one).
+        $config = \Phinx\Config\Config::fromYaml($path . '/no_default_namespace_key.yml');
+        $this->assertEquals('Phinx\Migration\Files', $config->getMigrationNamespaceName());
+    }
+
+    public function testWithDefaultNamepaceKey()
+    {
+        $path = __DIR__ . '/_files';
+
+        // test with the config array
+        $configArray = $this->getConfigArray();
+        $config = new \Phinx\Config\Config($configArray);
+        $this->assertEquals('testing', $config->getDefaultEnvironment());
+
+        // test using a Yaml file without the 'default_database' key.
+        // (it should default to the first one).
+        $config = \Phinx\Config\Config::fromYaml($path . '/with_default_namespace_key.yml');
+        $this->assertEquals('Project\Migrations\Files', $config->getMigrationNamespaceName());
+    }
+
     /**
      * @expectedException \RuntimeException
      */

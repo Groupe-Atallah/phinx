@@ -395,30 +395,49 @@ class Manager
 
                     $fileNames[$class] = basename($filePath);
 
-                    // load the migration file
-                    /** @noinspection PhpIncludeInspection */
-                    $class = 'Phinx\Migration\\'. $class;
-                    if (!class_exists($class)) {
-                        throw new \InvalidArgumentException(sprintf(
-                            'Could not find class "%s" in file "%s"',
-                            $class,
-                            $filePath
-                        ));
+                    $namespaceBasedMigration = false;
+
+                    // check if namespace is defined in the file
+                    $filecontent = file_get_contents($filePath);
+                    $namespace = $config;
+                    if (strpos($filecontent, $config->getMigrationNamespaceName()) !== false) {
+                        $class = $config->getMigrationNamespaceName() . '\\' . $class;
+                        $namespaceBasedMigration = true;
+                    } else {
+                        // load the migration file
+                        /** @noinspection PhpIncludeInspection */
+                        require_once $filePath;
+                        if (!class_exists($class)) {
+                            throw new \InvalidArgumentException(sprintf(
+                                'Could not find class "%s" in file "%s"',
+                                $class,
+                                $filePath
+                            ));
+                        }
                     }
 
                     // instantiate it
-                    $migration = new $class($version);
+                    try {
+                        $migration = new $class($version);
 
-                    if (!($migration instanceof AbstractMigration)) {
-                        throw new \InvalidArgumentException(sprintf(
-                            'The class "%s" in file "%s" must extend \Phinx\Migration\AbstractMigration',
-                            $class,
-                            $filePath
-                        ));
+                        if (!($migration instanceof AbstractMigration)) {
+                            throw new \InvalidArgumentException(sprintf(
+                                'The class "%s" in file "%s" must extend \Phinx\Migration\AbstractMigration',
+                                $class,
+                                $filePath
+                            ));
+                        }
+
+                        $migration->setOutput($this->getOutput());
+                        $versions[$version] = $migration;
+                    } catch (\Exception $e) {
+                        if ($namespaceBasedMigration) {
+                            throw new \InvalidConfigurationException(sprintf(
+                                'The namespace "%s" is not found.  Run composer update before running the migration',
+                                $class
+                            ));
+                        }
                     }
-
-                    $migration->setOutput($this->getOutput());
-                    $versions[$version] = $migration;
                 }
             }
 

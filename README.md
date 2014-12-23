@@ -128,6 +128,9 @@ Follow Rob (@\_rjm\_) on Twitter to stay up to date (http://twitter.com/_rjm_)
 
 ### Version History
 
+**0.4.2** (Tuesday, 23rd December 2014)
+* Add namespace into the migration generated file to support the PSR-2
+
 **0.4.1** (Tuesday, 23rd December 2014)
 
 * MySQL support for reserved words in hasColumn and getColumns methods
