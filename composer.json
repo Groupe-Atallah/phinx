@@ -1,4 +1,5 @@
 {
+    "minimum-stability": "dev",
     "name": "ssense/phinx",
     "type": "library",
     "description": "Phinx makes it ridiculously easy to manage the database migrations for your PHP app.",
