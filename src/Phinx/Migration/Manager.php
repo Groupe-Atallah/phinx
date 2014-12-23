@@ -397,7 +397,7 @@ class Manager
 
                     // load the migration file
                     /** @noinspection PhpIncludeInspection */
-                    require_once $filePath;
+                    $class = 'Phinx\Migration\\'. $class;
                     if (!class_exists($class)) {
                         throw new \InvalidArgumentException(sprintf(
                             'Could not find class "%s" in file "%s"',
